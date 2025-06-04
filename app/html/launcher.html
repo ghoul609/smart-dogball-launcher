@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/jpeg" href="/logo.jpeg">
+    <title>Launcher</title>
+    <style>
+        .launch-btn {
+            display: block;
+            margin: 100px auto 40px auto;
+            padding: 40px 80px;
+            font-size: 2.5rem;
+            color: #fff;
+            background: #d32f2f;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            transition: background 0.2s;
+        }
+
+        .launch-btn:hover {
+            background: #b71c1c;
+        }
+
+        .camera-feed {
+            display: block;
+            margin: 0 auto;
+            max-width: 90vw;
+            max-height: 60vh;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .slider-container {
+            width: 400px;
+            margin: 0 auto 30px auto;
+            text-align: center;
+        }
+
+        .slider-label {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .slider-value {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        input[type="range"] {
+            width: 80%;
+        }
+    </style>
+</head>
+
+<body>
+    <nav style="width: 100%; background: #222; padding: 18px 0 12px 0; margin-bottom: 30px;">
+        <ul style="display: flex; justify-content: center; list-style: none; margin: 0; padding: 0;">
+            <li style="margin: 0 30px;">
+                <a href="/" style="color: #fff; text-decoration: none; font-size: 1.3rem;">Home</a>
+            </li>
+            <li style="margin: 0 30px;">
+                <a href="/launch" style="color: #fff; text-decoration: none; font-size: 1.3rem;">Launch</a>
+            </li>
+            <li style="margin: 0 30px;">
+                <a href="/statistics" style="color: #fff; text-decoration: none; font-size: 1.3rem;">Statistieken</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="slider-container">
+        <label class="slider-label" for="speed-slider">
+            Launch Speed:
+            <span id="speed-value" class="slider-value"></span>
+        </label>
+        <input type="range" id="speed-slider" min="20" max="125" step="10" value="125">
+    </div>
+    <button class="launch-btn" onclick="launchScript()">Launch</button>
+    <img src="/video_feed" width="640" height="480" class="camera-feed">
+    <script>
+        function launchScript() {
+            const speed = document.getElementById('speed-slider').value;
+            const launchBtn = document.querySelector('.launch-btn');
+            launchBtn.disabled = true;
+            launchBtn.style.opacity = '0.6';
+            setTimeout(() => {
+                launchBtn.disabled = false;
+                launchBtn.style.opacity = '';
+            }, 15000);
+
+            console.log(`Launching with speed: ${speed}`);
+            fetch('/api/launch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ speed: Number(speed) })
+            })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        fetch("/api/database", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                speed: speed,
+                                launched: "false"
+                            })
+                        })
+                            .then(response => response.json())
+                            .then(data => console.log(data))
+                            .catch(error => console.error("Error:", error));
+                        alert('Launch failed!');
+                    } else {
+                        fetch("/api/database", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                speed: speed,
+                                launched: "true"
+                            })
+                        })
+                            .then(response => response.json())
+                            .then(data => console.log(data))
+                            .catch(error => console.error("Error:", error));
+                        alert('Launch command sent!');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    console.log('Response body:', data);
+                })
+                .catch((err) => {
+                    console.error('Fetch error:', err);
+                    alert('Error connecting to launcher.');
+                });
+        }
+
+        // Update slider value display
+        const slider = document.getElementById('speed-slider');
+        const speedValue = document.getElementById('speed-value');
+        function updateSpeedValue() {
+            speedValue.textContent = slider.value;
+        }
+        slider.addEventListener('input', updateSpeedValue);
+        updateSpeedValue();
+    </script>
+</body>
+
+</html>

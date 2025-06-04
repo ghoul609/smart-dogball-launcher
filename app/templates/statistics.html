@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/jpeg" href="/logo.jpeg">
+    <title>Statistieken</title>
+    <style>
+        table { border-collapse: collapse; width: 50%; margin: 20px auto; }
+        th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
+        th { background: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <nav style="width: 100%; background: #222; padding: 18px 0 12px 0; margin-bottom: 30px;">
+        <ul style="display: flex; justify-content: center; list-style: none; margin: 0; padding: 0;">
+            <li style="margin: 0 30px;">
+                <a href="/" style="color: #fff; text-decoration: none; font-size: 1.3rem;">Home</a>
+            </li>
+            <li style="margin: 0 30px;">
+                <a href="/launch" style="color: #fff; text-decoration: none; font-size: 1.3rem;">Launch</a>
+            </li>
+            <li style="margin: 0 30px;">
+                <a href="/statistics" style="color: #fff; text-decoration: none; font-size: 1.3rem;">Statistieken</a>
+            </li>
+        </ul>
+    </nav>
+    <h2 style="text-align:center;">Historische Speel Data</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Datum</th>
+                <th>Snelheid</th>
+                <th>Performance status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in records %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
