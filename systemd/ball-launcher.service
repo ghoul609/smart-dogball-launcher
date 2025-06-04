@@ -1,6 +1,6 @@
 [Unit]
 Description=Ball Launcher Python Script
-After=network.target
+After=network.target tailscaled.service
 
 [Service]
 Type=simple

@@ -1,7 +1,10 @@
 #!/bin/bash
+
+sleep 10
+
 cd /home/loic/sdl/app
 
 sudo tailscale funnel 8080 &
 
 # Run the app
-exec pipenv run python3 main.py
+exec python3 main.py
