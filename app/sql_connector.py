@@ -38,7 +38,7 @@ def insert_data(speed_value: int, launched: str):
     conn = mysql.connector.connect(
         host='localhost',
         user='loic',
-        password='loic123!',
+        password='*****',
         database='app'
     )
 
