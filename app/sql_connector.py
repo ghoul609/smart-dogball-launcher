@@ -7,7 +7,7 @@ def fetch_data():
     conn = mysql.connector.connect(
         host='localhost',
         user='loic',
-        password='loic123!',
+        password='*****',
         database='app'
     )
 
